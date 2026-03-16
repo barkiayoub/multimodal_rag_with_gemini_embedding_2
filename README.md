@@ -1,22 +1,22 @@
-# 📄 Manual Assistant — RAG with Gemini Embedding 2 (Multimodal)
+# Manual Assistant — RAG with Gemini Embedding 2 (Multimodal)
 
 > Chat with any PDF manual. Powered by Google's **first natively multimodal embedding model** — `gemini-embedding-2-preview`.
 
 ---
 
-## 🎯 Real Results
+## Real Results
 
 Ask a question → get a structured answer + page thumbnails + similarity scores:
 
-![Manual Assistant — Answer with page thumbnails](images/image.png)
+<!-- ![Manual Assistant — Answer with page thumbnails](images/image.png) -->
 
-The sources panel shows each matched page with its **similarity score**:
+<!-- The sources panel shows each matched page with its **similarity score**: -->
 
-![Manual Assistant — 5 sources expanded with match scores](images/image_2.png)
+<!-- ![Manual Assistant — 5 sources expanded with match scores](images/image_2.png) -->
 
 ---
 
-## ⚡ How `gemini-embedding-2-preview` changed RAG forever
+## How `gemini-embedding-2-preview` changed RAG forever
 
 ### Before (classic RAG — text only)
 
@@ -30,14 +30,14 @@ The model **only sees words**. It misses diagrams, tables, visual layouts, illus
 
 ```
 PDF page → extract text ┐
-           render image  ┘ → embed TOGETHER → one unified vector
+           render image ┘ → embed TOGETHER → one unified vector
 ```
 
 The model sees **everything**: words AND the visual page. One single 1536-dimensional vector captures both.
 
 ---
 
-## 🔍 What the model sees per page
+## What the model sees per page
 
 | What we send | Why it matters |
 |---|---|
@@ -48,7 +48,7 @@ The model sees **everything**: words AND the visual page. One single 1536-dimens
 
 ---
 
-## 📊 Similarity scores explained
+## Similarity scores explained
 
 From the screenshots above, the search returned:
 
@@ -64,50 +64,50 @@ The multimodal model found pages **with part diagrams** (pages 5, 6, 8) — not 
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```text
 PDF Manual
     │
     ▼
 ┌─────────────────────────────────────────────┐
-│  ingest.py  (run once)                       │
-│                                              │
-│  For each page:                              │
-│    1. Extract text        (PyMuPDF)          │
-│    2. Render page → PNG   (2x resolution)    │
-│    3. text + image → embed together          │
-│       └─ gemini-embedding-2-preview          │
-│          task_type: RETRIEVAL_DOCUMENT       │
-│          output_dimensionality: 1536         │
-│    4. Upsert vector + metadata → Pinecone    │
+│  ingest.py  (run once)                      │
+│                                             │
+│  For each page:                             │
+│    1. Extract text        (PyMuPDF)         │
+│    2. Render page → PNG   (2x resolution)   │
+│    3. text + image → embed together         │
+│       └─ gemini-embedding-2-preview         │
+│          task_type: RETRIEVAL_DOCUMENT      │
+│          output_dimensionality: 1536        │
+│    4. Upsert vector + metadata → Pinecone   │
 └─────────────────────────────────────────────┘
-    │
-    ▼
+                    │
+                    ▼
 ┌─────────────────────────────────────────────┐
-│  app.py  (Streamlit)                         │
-│                                              │
-│  User question                               │
-│    │                                         │
-│    ▼                                         │
-│  Embed query                                 │
-│  └─ gemini-embedding-2-preview               │
-│     task_type: RETRIEVAL_QUERY               │
-│    │                                         │
-│    ▼                                         │
-│  Search Pinecone (cosine similarity, top 5)  │
-│    │                                         │
-│    ▼                                         │
-│  Generate answer ← deepseek-chat             │
-│    │                                         │
-│    ▼                                         │
-│  Show answer + page thumbnails + scores      │
+│  app.py  (Streamlit)                        │
+│                                             │
+│  User question                              │
+│    │                                        │
+│    ▼                                        │
+│  Embed query                                │
+│  └─ gemini-embedding-2-preview              │
+│     task_type: RETRIEVAL_QUERY              │
+│    │                                        │
+│    ▼                                        │
+│  Search Pinecone (cosine similarity, top 5) │
+│    │                                        │
+│    ▼                                        │
+│  Generate answer ← deepseek-chat            │
+│    │                                        │
+│    ▼                                        │
+│  Show answer + page thumbnails + scores     │
 └─────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Component | Technology |
 | :--- | :--- |
@@ -115,11 +115,10 @@ PDF Manual
 | **Generation** | `deepseek-chat` (DeepSeek) |
 | **Vector Store** | Pinecone (serverless, cosine) |
 | **PDF Processing** | PyMuPDF (`fitz`) — text + image render |
-| **UI** | Streamlit |
 
 ---
 
-## 🔑 The embedding code (core of the app)
+## The embedding code (core of the app)
 
 ```python
 from google import genai
@@ -150,7 +149,7 @@ No chunking strategies, no OCR pipelines, no image captioning — the model hand
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Install dependencies
 
@@ -184,7 +183,7 @@ streamlit run app.py
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 RAG_With_new_model_google/
@@ -207,7 +206,7 @@ RAG_With_new_model_google/
 
 ---
 
-## 📚 References
+## References
 
 - [Gemini Embedding 2 — Google Blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/)
 - [Gemini Embeddings API Docs](https://ai.google.dev/gemini-api/docs/embeddings)
