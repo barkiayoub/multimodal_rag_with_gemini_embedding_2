@@ -8,7 +8,7 @@
 
 Ask a question → get a structured answer + page thumbnails + similarity scores:
 
-<!-- ![Manual Assistant — Answer with page thumbnails](images/image.png) -->
+![Manual Assistant — Answer with page thumbnails](images/multimodal_rag_using_gemini_embeddings_2.jpeg)
 
 <!-- The sources panel shows each matched page with its **similarity score**: -->
 
@@ -67,9 +67,9 @@ The multimodal model found pages **with part diagrams** (pages 5, 6, 8) — not 
 ## Architecture
 
 ```text
-PDF Manual
-    │
-    ▼
+                PDF File
+                    │
+                    ▼
 ┌─────────────────────────────────────────────┐
 │  ingest.py  (run once)                      │
 │                                             │
@@ -78,8 +78,8 @@ PDF Manual
 │    2. Render page → PNG   (2x resolution)   │
 │    3. text + image → embed together         │
 │       └─ gemini-embedding-2-preview         │
-│          task_type: RETRIEVAL_DOCUMENT      │
-│          output_dimensionality: 1536        │
+│       └─ task_type: RETRIEVAL_DOCUMENT      │
+│       └─ output_dimensionality: 1536        │
 │    4. Upsert vector + metadata → Pinecone   │
 └─────────────────────────────────────────────┘
                     │

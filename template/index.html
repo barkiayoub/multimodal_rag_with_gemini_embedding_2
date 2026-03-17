@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>PDF AI Chat Interface</title>
+  <!-- Tailwind CSS v3 with Plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Tailwind Configuration for custom colors -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#2563eb',
+              secondary: '#64748b',
+              accent: '#f59e0b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style data-purpose="layout-styles">
+    /* Ensure the body takes full height for the split screen */
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* Custom scrollbar for a cleaner look */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 flex flex-col h-screen font-sans antialiased">
+  <!-- BEGIN: MainHeader -->
+  <header class="h-16 border-b bg-white flex items-center justify-between px-6 shrink-0 z-10"
+    data-purpose="application-header">
+    <div class="flex items-center gap-4">
+      <div class="bg-brand-primary p-2 rounded-lg">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+        </svg>
+      </div>
+      <h1 class="text-xl font-bold text-gray-800">Multimodal RAG with Gemini Embedding 2</h1>
+    </div>
+    <div class="flex items-center gap-3">
+      <button
+        class="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md transition-colors">Share</button>
+      <button
+        class="px-4 py-2 text-sm font-medium text-white bg-brand-primary hover:bg-blue-700 rounded-md shadow-sm transition-colors">Download
+        PDF</button>
+    </div>
+  </header>
+  <!-- END: MainHeader -->
+  <!-- BEGIN: MainContentWrapper -->
+  <main class="flex-1 flex overflow-hidden" data-purpose="split-screen-container">
+    <!-- BEGIN: LeftPanel (PDF Viewer) -->
+    <section class="w-1/2 h-full border-r bg-gray-200 overflow-y-auto custom-scrollbar p-8 flex justify-center"
+      data-purpose="pdf-viewer" id="pdf-container">
+      <!-- Simulated PDF Page -->
+      <div class="w-full max-w-2xl bg-white shadow-xl min-h-[1000px] p-12 relative">
+        <div class="mb-8">
+          <h2 class="text-3xl font-serif font-bold text-gray-900">Executive Summary: Renewable Energy Trends 2024</h2>
+          <p class="text-sm text-gray-500 mt-2 italic">Published: January 15, 2024</p>
+        </div>
+        <div class="space-y-6 text-gray-800 leading-relaxed font-serif">
+          <p>
+            The global landscape for renewable energy has reached a pivotal inflection point. As of late 2023,
+            <mark class="bg-yellow-200 px-1 rounded" id="citation-target-1">installed solar capacity has surpassed 1.2
+              Terawatts globally</mark>, representing a 22% increase year-over-year. This growth is primarily driven by
+            manufacturing efficiencies and supportive policy frameworks in major economies.
+          </p>
+          <p>
+            Wind energy continues to show robust performance, particularly in offshore installations.
+            <mark class="bg-yellow-200 px-1 rounded" id="citation-target-2">The average capacity factor for new offshore
+              turbines has improved to 48%</mark>, making them increasingly competitive with traditional baseload power
+            sources.
+          </p>
+          <p>
+            However, the integration of these intermittent sources remains a significant challenge for existing grid
+            architectures. Investments in battery storage technologies and grid modernization are becoming as critical
+            as the generation assets themselves.
+          </p>
+          <div
+            class="h-40 bg-gray-50 border border-dashed border-gray-300 rounded-md flex items-center justify-center italic text-gray-400">
+            [Chart: Annual Growth in Renewables vs Fossil Fuels]
+          </div>
+          <p>
+            Future projections suggest that by 2030, renewables will account for nearly 45% of total global electricity
+            generation, provided that supply chain constraints for critical minerals like lithium and cobalt are
+            effectively managed.
+          </p>
+        </div>
+        <!-- Pagination Indicator -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-gray-400">
+          Page 1 of 12
+        </div>
+      </div>
+    </section>
+    <!-- END: LeftPanel -->
+    <!-- BEGIN: RightPanel (AI Chat) -->
+    <section class="w-1/2 h-full flex flex-col bg-white" data-purpose="chat-interface">
+      <!-- Chat Message Area -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar" id="chat-history">
+        <!-- AI Message -->
+        <div class="flex gap-4">
+          <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+              <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+              </path>
+            </svg>
+          </div>
+          <div class="bg-gray-100 rounded-2xl p-4 text-gray-800 text-sm max-w-[85%]">
+            Hello! I've analyzed your document. You can ask me questions about the renewable energy trends or specific
+            data points in the text.
+          </div>
+        </div>
+        <!-- User Message -->
+        <div class="flex gap-4 justify-end">
+          <div class="bg-brand-primary text-white rounded-2xl p-4 text-sm max-w-[85%] shadow-sm">
+            What is the current global solar capacity mentioned in the report?
+          </div>
+          <div
+            class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center shrink-0 text-xs font-bold text-gray-600">
+            JD
+          </div>
+        </div>
+        <!-- AI Message with Citation Link -->
+        <div class="flex gap-4">
+          <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+              <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+              </path>
+            </svg>
+          </div>
+          <div class="bg-gray-100 rounded-2xl p-4 text-gray-800 text-sm max-w-[85%]">
+            <p class="mb-2">According to the report, global solar capacity has now exceeded 1.2 Terawatts.</p>
+            <button
+              class="inline-flex items-center gap-1.5 px-2 py-1 bg-white border border-blue-200 text-brand-primary text-xs font-semibold rounded hover:bg-blue-50 transition-colors"
+              data-purpose="citation-link">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+              </svg>
+              See Source (Page 1)
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Chat Input Area -->
+      <div class="p-4 border-t bg-white" data-purpose="chat-input-container">
+        <div class="relative max-w-3xl mx-auto">
+          <textarea
+            class="w-full border-gray-300 rounded-xl pr-12 focus:ring-brand-primary focus:border-brand-primary resize-none transition-all placeholder:text-gray-400"
+            placeholder="Ask a question about this document..." rows="2"></textarea>
+          <button
+            class="absolute right-3 bottom-3 p-2 bg-brand-primary text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+            </svg>
+          </button>
+        </div>
+        <p class="text-center text-[10px] text-gray-400 mt-2 uppercase tracking-widest font-bold">AI can make
+          mistakes. Verify important information.</p>
+      </div>
+    </section>
+    <!-- END: RightPanel -->
+  </main>
+  <!-- END: MainContentWrapper -->
+  <script>
+    const chatHistory = document.getElementById('chat-history');
+    const chatInput = document.querySelector('textarea');
+    const sendButton = document.querySelector('button.bg-brand-primary.text-white');
+    const pdfContainer = document.getElementById('pdf-container');
+
+    function appendMessage(role, content, sources = []) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = role === 'user' ? 'flex gap-4 justify-end' : 'flex gap-4';
+
+      let sourcesHtml = '';
+      if (sources && sources.length > 0) {
+        sourcesHtml = `
+                <div class="mt-2 flex flex-wrap gap-2">
+                    ${sources.map(src => `
+                        <button onclick="viewSource('${src.image_path}', ${src.page_number})" class="inline-flex items-center gap-1.5 px-2 py-1 bg-white border border-blue-200 text-brand-primary text-xs font-semibold rounded hover:bg-blue-50 transition-colors">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                            Page ${src.page_number} (${src.score}%)
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+      }
+
+      if (role === 'user') {
+        messageDiv.innerHTML = `
+                <div class="bg-brand-primary text-white rounded-2xl p-4 text-sm max-w-[85%] shadow-sm">
+                    ${content}
+                </div>
+                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center shrink-0 text-xs font-bold text-gray-600">
+                    U
+                </div>
+            `;
+      } else {
+        messageDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                </div>
+                <div class="bg-gray-100 rounded-2xl p-4 text-gray-800 text-sm max-w-[85%]">
+                    <div class="mb-2 whitespace-pre-wrap">${content}</div>
+                    ${sourcesHtml}
+                </div>
+            `;
+      }
+      chatHistory.appendChild(messageDiv);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    function viewSource(imagePath, pageNumber) {
+      console.log('viewSource called:', imagePath, pageNumber);
+      // Path is already normalized by the server (starts with /)
+      pdfContainer.innerHTML = `
+            <div class="w-full max-w-2xl bg-white shadow-xl p-4 relative">
+                <img src="${imagePath}" class="w-full h-auto rounded" alt="Page ${pageNumber}" onerror="console.error('Failed to load:', this.src); this.style.display='none';">
+                <div class="mt-4 text-center text-xs text-gray-400">
+                    Viewing Source: Page ${pageNumber}
+                </div>
+            </div>
+        `;
+    }
+
+    async function handleSend() {
+      const question = chatInput.value.trim();
+      if (!question) return;
+
+      chatInput.value = '';
+      appendMessage('user', question);
+
+      // Loading state
+      const loadingId = 'loading-' + Date.now();
+      const loadingDiv = document.createElement('div');
+      loadingDiv.id = loadingId;
+      loadingDiv.className = 'flex gap-4';
+      loadingDiv.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 animate-pulse">
+                <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </div>
+            <div class="bg-gray-100 rounded-2xl p-4 text-gray-400 text-sm italic">
+                Analyzing the manual...
+            </div>
+        `;
+      chatHistory.appendChild(loadingDiv);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      try {
+        const response = await fetch('/api/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question })
+        });
+
+        const data = await response.json();
+        document.getElementById(loadingId).remove();
+
+        if (data.error) {
+          appendMessage('assistant', 'Sorry, I encountered an error: ' + data.error);
+        } else {
+          appendMessage('assistant', data.answer, data.sources);
+          if (data.sources && data.sources.length > 0) {
+            // Update preview with the best match
+            viewSource(data.sources[0].image_path, data.sources[0].page_number);
+          }
+        }
+      } catch (error) {
+        document.getElementById(loadingId).remove();
+        appendMessage('assistant', 'Sorry, I could not reach the server.');
+        console.error(error);
+      }
+    }
+
+    sendButton.addEventListener('click', handleSend);
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    });
+
+    // Clear initial dummy messages
+    window.onload = () => {
+      chatHistory.innerHTML = '';
+      appendMessage('assistant', 'Hello! I am your Manual Assistant. Ask me anything about the document.');
+    };
+  </script>
+</body>
+
+</html>

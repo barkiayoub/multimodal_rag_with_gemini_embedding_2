@@ -111,7 +111,7 @@ def query_rag(question: str, top_k: int = 5) -> Tuple[str, List[Dict]]:
             "page_number": int(m.metadata.get("page_number", 0)),
             "score": round(float(m.score) * 100, 1),
             "text_snippet": m.metadata.get("text", "")[:350],
-            "image_path": m.metadata.get("image_path", ""),
+            "image_path": m.metadata.get("image_path", "").replace("\\", "/"),
         })
 
     return answer, sources
